@@ -3,7 +3,7 @@ const cloudinary = require('cloudinary').v2;
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
 const nodemailer = require('nodemailer');
-const { userModel } = require("../models/user.model");
+const { userModel, attemptedQuestionsModel } = require("../models/user.model");
 
 
 const getRandomQuestions = (array, count)=> {
@@ -38,6 +38,10 @@ const createAccount = async(req,res)=>{
         // }
         // response = {...response, image_url: uploaded_url};
         // userModel(response).save()
+        attemptedQuestionsModel({
+            _id: response._id,
+            questions: []
+        }).save();
         let transporter = nodemailer.createTransport({
             service: 'gmail',
             auth: {
@@ -80,8 +84,8 @@ const signIn =(req,res)=>{
        if(response){
             response.validatePassword(password, (error, same)=>{
                 if (same) {
-                    let token = jwt.sign({password, email}, process.env.JWTSECRET);
-                    res.status(200).json({message:'successful', token});
+                    // let token = jwt.sign({password, email}, process.env.JWTSECRET);
+                    res.status(200).json({message:'successful', details: response});
                 } else{
                     res.status(400).json('incorrect password');
                 }
@@ -93,6 +97,10 @@ const signIn =(req,res)=>{
     .catch((error)=>{
         console.log(error);
     })
+}
+
+const getAttemptedQuestions = (req, res) => {
+
 }
 
 module.exports = {createAccount, signIn};

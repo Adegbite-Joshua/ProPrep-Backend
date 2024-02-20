@@ -10,11 +10,12 @@ const userSchema = new mongoose.Schema({
     department: { required: true, type: String },
     paidSubscription: { type: Boolean },
     testQuestionNumber: { type: Number },
+    attemptedQuestions: [{ type: mongoose.Schema.Types.ObjectId, ref: 'attemptedQuestions' }]
 })
 
-const takenQuizSchema = new mongoose.Schema({
+const attemptedQuestionsSchema = new mongoose.Schema({
     _id: { type: String },
-    quiz: [
+    questions: [
         {
             courseCode: { required: true, type: String },
             questions: [
@@ -60,7 +61,7 @@ userSchema.methods.validatePassword = function (password, callback) {
 }
 
 const userModel = mongoose.model(`user_details`, userSchema);
-const takenQuizModel = mongoose.model(`taken_quiz`, takenQuizSchema);
+const attemptedQuestionsModel = mongoose.model(`attemptedQuestions`, attemptedQuestionsSchema);
 
 
-module.exports = { userModel, takenQuizModel };
+module.exports = { userModel, attemptedQuestionsModel };
