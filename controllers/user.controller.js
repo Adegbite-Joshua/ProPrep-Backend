@@ -31,7 +31,7 @@ const createAccount = async(req,res)=>{
     // let uploaded_url = image_url;
     userModel({...rest}).save()
     .then(async(response)=>{
-        res.status(201).json('saved')
+        res.status(201).json('saved');
         // if (new_image_url) {
         //     const uploadImage = await cloudinary.uploader.upload(req.body.image_url, {public_id: `proprep_${Math.round(Math.random()*10000)}${req.body.email}`});
         //     uploaded_url = uploadImage.secure_url;
@@ -100,7 +100,7 @@ const signIn =(req,res)=>{
 }
 
 const getAttemptedQuestions = (req, res) => {
-
+    
 }
 
 module.exports = {createAccount, signIn};

@@ -40,9 +40,6 @@ const generateRandomQuestions = async (req, res) => {
   let { level, department, semester, courseCode, numberOfQuestions } = req.body;
   try {
     const document = await questionsModel.findOne({ level },  {[`${department}.${semester}.questions.${courseCode}`]: 1});
-    if (!document[department][semester].questions.get(courseCode)) {
-      throw new Error('Questions not found in the database for the specified criteria.');
-    }
 
     const allQuestions = document[department][semester].questions.get(courseCode);
     console.log(allQuestions);
@@ -53,19 +50,16 @@ const generateRandomQuestions = async (req, res) => {
 
     const maxQuestions = Math.min(numberOfQuestions, allQuestions.length);
 
-    // Copy the array to avoid modifying the original array
     const copyOfQuestions = [...allQuestions];
 
-    // Shuffle the array to get a random order
     for (let i = copyOfQuestions.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [copyOfQuestions[i], copyOfQuestions[j]] = [copyOfQuestions[j], copyOfQuestions[i]];
     }
 
-    // Return the first 'numberOfQuestions' elements
     const randomQuestions = copyOfQuestions.slice(0, maxQuestions);
 
-    res.status(200).json(randomQuestions);
+    res.status(200).json({ questions: randomQuestions, startingTime: Date.now() });
   } catch (error) {
     console.error('Error generating random questions:', error);
     res.status(500).json({ error: 'Internal Server Error' });
