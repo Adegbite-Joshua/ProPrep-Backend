@@ -66,9 +66,83 @@ const generateRandomQuestions = async (req, res) => {
   }
 };
 
+
+// const generateRandomOfflineQuestions = async (req, res) => {
+//   const { level, department, semester, numberOfQuestions } = req.body;
+
+//   try {
+//     const document = await questionsModel.findOne({ level }, {
+//       [`${department}.${semester}.questions`]: 1,
+//       [`general.${semester}.questions`]: 1,
+//     });
+
+//     const allQuestions = [
+//       ...(document?.[department]?.[semester]?.questions?.values() || []),
+//       ...(document?.general?.[semester]?.questions?.values() || []),
+//     ].flat();
+
+//     if (!allQuestions || allQuestions.length === 0) {
+//       throw new Error('No questions found for the specified criteria.');
+//     }
+
+//     const maxQuestions = Math.min(numberOfQuestions, allQuestions.length);
+
+//     const copyOfQuestions = [...allQuestions];
+
+//     for (let i = copyOfQuestions.length - 1; i > 0; i--) {
+//       const j = Math.floor(Math.random() * (i + 1));
+//       [copyOfQuestions[i], copyOfQuestions[j]] = [copyOfQuestions[j], copyOfQuestions[i]];
+//     }
+
+//     const randomQuestions = copyOfQuestions.slice(0, maxQuestions);
+
+//     res.status(200).json({ questions: randomQuestions});
+//   } catch (error) {
+//     console.error('Error generating random questions:', error);
+//     res.status(500).json({ error: 'Internal Server Error' });
+//   }
+// };
+
+const generateRandomOfflineQuestions = async (req, res) => {
+  const { level, department, semester, numberOfQuestions } = req.body;
+
+  try {
+    const document = await questionsModel.findOne({ level }, {
+      [`${department}.${semester}.questions`]: 1,
+      [`general.${semester}.questions`]: 1,
+    });
+
+    const allQuestions = [
+      ...(Object.values(document?.[department]?.[semester]?.questions || {}) || []),
+      ...(Object.values(document?.general?.[semester]?.questions || {}) || []),
+    ].flat();
+
+    if (!allQuestions || allQuestions.length === 0) {
+      throw new Error('No questions found for the specified criteria.');
+    }
+
+    const maxQuestions = Math.min(numberOfQuestions, allQuestions.length);
+
+    const copyOfQuestions = [...allQuestions];
+
+    for (let i = copyOfQuestions.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [copyOfQuestions[i], copyOfQuestions[j]] = [copyOfQuestions[j], copyOfQuestions[i]];
+    }
+
+    const randomQuestions = copyOfQuestions.slice(0, maxQuestions);
+
+    res.status(200).json(randomQuestions);
+  } catch (error) {
+    console.error('Error generating random questions:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+
 // Example usage in a route
 // app.post('/generateRandomQuestions', generateRandomQuestions);
 
 
 
-module.exports = { uploadQuestions, generateRandomQuestions };
+module.exports = { uploadQuestions, generateRandomQuestions, generateRandomOfflineQuestions };
