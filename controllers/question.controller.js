@@ -39,7 +39,7 @@ const uploadQuestions = async (req, res) => {
 const generateRandomQuestions = async (req, res) => {
   let { level, department, semester, courseCode, numberOfQuestions } = req.body;
   try {
-    const document = await questionsModel.findOne({ level },  {[`${department}.${semester}.questions.${courseCode}`]: 1});
+    const document = await questionsModel.findOne({ level }, { [`${department}.${semester}.questions.${courseCode}`]: 1 });
 
     const allQuestions = document[department][semester].questions.get(courseCode);
     console.log(allQuestions);
@@ -132,13 +132,12 @@ const generateRandomOfflineQuestions = async (req, res) => {
 
     const randomQuestions = copyOfQuestions.slice(0, maxQuestions);
 
-    res.status(200).json(randomQuestions);
+    res.status(200).json(randomQuestions[2]);
   } catch (error) {
     console.error('Error generating random questions:', error);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };
-
 
 // Example usage in a route
 // app.post('/generateRandomQuestions', generateRandomQuestions);
