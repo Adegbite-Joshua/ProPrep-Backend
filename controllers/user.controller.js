@@ -38,7 +38,7 @@ const createAccount = async(req,res)=>{
         // }
         // response = {...response, image_url: uploaded_url};
         // userModel(response).save()
-        attemptedQuestionsModel({
+        attem({
             _id: response._id,
             questions: []
         }).save();
@@ -99,8 +99,82 @@ const signIn =(req,res)=>{
     })
 }
 
-const getAttemptedQuestions = (req, res) => {
-    
-}
+// const fetchAttemptedQuestions = async (req, res) => {
+//     try {
+//       const { startingNumber, endingNumber } = req.params; 
+  
+//       const result = await attemptedQuestionsModel.find({
+//         'questions.courseCode': { $exists: true }, // Ensure the 'courseCode' field exists in the questions array
+//       },
+//       {
+//         _id: 0,
+//         questions: {
+//           $elemMatch: {
+//             $and: [
+//               { 'courseCode': { $exists: true } },
+//               { 'questions': { $exists: true, $ne: [] } }, // Ensure 'questions' array is not empty
+//             ],
+//           },
+//         },
+//       })
+//       .sort({ 'questions.date': -1 }) // Sort in descending order based on the 'date' field
+//       .limit(endingNumber - startingNumber + 1) // Limit the number of results based on the range
+  
+//       if (!result || !result.length) {
+//         throw new Error('No matching records found.');
+//       }
+  
+//       const sortedQuestions = result.map(item => item.questions[0]);
+  
+//       res.status(200).json({ sortedQuestions });
+//     } catch (error) {
+//       console.error('Error fetching and sorting questions:', error);
+//       res.status(500).json({ error: 'Internal Server Error' });
+//     }
+// };
 
-module.exports = {createAccount, signIn};
+const fetchAttemptedQuestions = async (req, res) => {
+    try {
+      const { startingNumber, endingNumber, userId } = req.params;
+  
+      const result = await attemptedQuestionsModel.findOne({
+        'questions.courseCode': { $exists: true },
+      },
+      {
+        _id: userId,
+        questions: {
+          $elemMatch: {
+            $and: [
+              { 'courseCode': { $exists: true } },
+              { 'questions': { $exists: true, $ne: [] } },
+            ],
+          },
+        },
+      })
+      .sort({ 'questions.date': -1 })
+      .limit(endingNumber - startingNumber + 1);
+  
+      if (!result) {
+        // Create a new document if not found
+        const newDocument = new attemptedQuestionsModel();
+        await newDocument.save();
+  
+        return res.status(200).json({ sortedQuestions: [] });
+      }
+  
+      if (!result.questions || result.questions.length === 0) {
+        return res.status(200).json({ sortedQuestions: [] });
+      }
+  
+      const sortedQuestions = result.questions[0];
+  
+      res.status(200).json({ sortedQuestions });
+    } catch (error) {
+      console.error('Error fetching and sorting questions:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
+  
+
+
+module.exports = {createAccount, signIn, fetchAttemptedQuestions};
