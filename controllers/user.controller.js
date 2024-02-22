@@ -99,39 +99,19 @@ const signIn =(req,res)=>{
     })
 }
 
-// const fetchAttemptedQuestions = async (req, res) => {
-//     try {
-//       const { startingNumber, endingNumber } = req.params; 
-  
-//       const result = await attemptedQuestionsModel.find({
-//         'questions.courseCode': { $exists: true }, // Ensure the 'courseCode' field exists in the questions array
-//       },
-//       {
-//         _id: 0,
-//         questions: {
-//           $elemMatch: {
-//             $and: [
-//               { 'courseCode': { $exists: true } },
-//               { 'questions': { $exists: true, $ne: [] } }, // Ensure 'questions' array is not empty
-//             ],
-//           },
-//         },
-//       })
-//       .sort({ 'questions.date': -1 }) // Sort in descending order based on the 'date' field
-//       .limit(endingNumber - startingNumber + 1) // Limit the number of results based on the range
-  
-//       if (!result || !result.length) {
-//         throw new Error('No matching records found.');
-//       }
-  
-//       const sortedQuestions = result.map(item => item.questions[0]);
-  
-//       res.status(200).json({ sortedQuestions });
-//     } catch (error) {
-//       console.error('Error fetching and sorting questions:', error);
-//       res.status(500).json({ error: 'Internal Server Error' });
-//     }
-// };
+const updateUserDetails = async (req, res) => {
+  try {
+    const { newDetails, userId } = req.body;
+    
+    const result = await userModel.findByIdAndUpdate(userId, { $set: newDetails }, { new: true });
+
+    res.status(200).json({ message: 'User details updated successfully!', updatedUser: result });
+  } catch (error) {
+    console.error('Error updating user details:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
 
 const fetchAttemptedQuestions = async (req, res) => {
     try {
@@ -174,7 +154,76 @@ const fetchAttemptedQuestions = async (req, res) => {
       res.status(500).json({ error: 'Internal Server Error' });
     }
 };
-  
+
+const fetchCourseAttemptedQuestions = async (req, res) => {
+  try {
+    const { startingNumber, endingNumber, userId, courseCode } = req.params;
+
+    const result = await attemptedQuestionsModel.findOne({
+      '_id': userId,
+      'questions.courseCode': courseCode,
+      'questions.questions': { $exists: true, $ne: [] }
+    },
+    {
+      _id: 0,
+      'questions.$': 1,
+    })
+    .sort({ 'questions.date': -1 })
+    .limit(endingNumber - startingNumber + 1);
+
+    if (!result) {
+      // Create a new document if not found
+      const newDocument = new attemptedQuestionsModel();
+      await newDocument.save();
+
+      return res.status(200).json({ sortedQuestions: [] });
+    }
+
+    if (!result.questions || result.questions.length === 0) {
+      return res.status(200).json({ sortedQuestions: [] });
+    }
+
+    const sortedQuestions = result.questions[0];
+
+    res.status(200).json({ sortedQuestions });
+  } catch (error) {
+    console.error('Error fetching and sorting questions:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
 
 
-module.exports = {createAccount, signIn, fetchAttemptedQuestions};
+const addAttemptedQuestion = async (req, res) => {
+  try {
+    const { userId, newQuestion } = req.body;
+    
+    const result = await attemptedQuestionsModel.updateOne(
+      { _id: userId },
+      { $push: { questions: newQuestion } },
+      { upsert: true } 
+    );
+
+    if (result.nModified === 0 && result.upserted.length === 0) {   
+      throw new Error('Failed to add question. User may not exist.');
+    }
+
+    res.status(200).json({ message: 'Question added successfully!' });
+  } catch (error) {
+    console.error('Error adding question:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+const getLandingNews = (req, res) =>{
+  res.status(200).json({
+    title: 'Hello, This is a message',
+    message: 'Hello buddy, this is a presaved message',
+    links: [{
+      title: '',
+      link: ''
+    }]
+  })
+};
+
+
+module.exports = {createAccount, signIn, fetchCourseAttemptedQuestions, addAttemptedQuestion, getLandingNews, updateUserDetails};

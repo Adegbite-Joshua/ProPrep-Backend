@@ -1,10 +1,13 @@
 const express = require('express')
-const { createAccount, signIn, fetchAttemptedQuestions } = require('../controllers/user.controller')
+const { createAccount, signIn, fetchCourseAttemptedQuestions, addAttemptedQuestion, getLandingNews, updateUserDetails } = require('../controllers/user.controller')
 const router = express.Router()
 
 router.post('/create_account', createAccount)
 router.post('/sign_in', signIn)
-router.post('/get_attempted_questions', fetchAttemptedQuestions)
+router.post('/update_details', updateUserDetails)
+router.post('/get_attempted_questions', fetchCourseAttemptedQuestions)
+router.post('/save_attempted_questions', addAttemptedQuestion)
+router.get('/get_landing_news', getLandingNews)
 
 
 module.exports = router
