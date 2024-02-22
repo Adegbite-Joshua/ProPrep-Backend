@@ -7,7 +7,7 @@ router.post('/sign_in', signIn)
 router.post('/update_details', updateUserDetails)
 router.post('/get_attempted_questions', fetchCourseAttemptedQuestions)
 router.post('/save_attempted_questions', addAttemptedQuestion)
-router.get('/get_landing_news', getLandingNews)
+router.get('/get_latest_update', getLandingNews)
 
 
-module.exports = router
+module.exports = router;
