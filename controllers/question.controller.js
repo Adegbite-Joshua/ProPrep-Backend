@@ -131,8 +131,7 @@ const generateRandomOfflineQuestions = async (req, res) => {
     }
 
     const randomQuestions = copyOfQuestions.slice(0, maxQuestions);
-
-    res.status(200).json(randomQuestions[2]);
+    res.status(200).json(randomQuestions[1]);
   } catch (error) {
     console.error('Error generating random questions:', error);
     res.status(500).json({ error: 'Internal Server Error' });
