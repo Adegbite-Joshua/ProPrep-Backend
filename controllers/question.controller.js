@@ -134,12 +134,9 @@ const generateRandomOfflineQuestions = async (req, res) => {
     res.status(200).json(randomQuestions[1]);
   } catch (error) {
     console.error('Error generating random questions:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    res.status(500).json({ error });
   }
 };
-
-// Example usage in a route
-// app.post('/generateRandomQuestions', generateRandomQuestions);
 
 
 

@@ -157,7 +157,7 @@ const fetchAttemptedQuestions = async (req, res) => {
 
 const fetchCourseAttemptedQuestions = async (req, res) => {
   try {
-    const { startingNumber, endingNumber, userId, courseCode } = req.params;
+    const { startingNumber, endingNumber, userId, courseCode } = req.body;
 
     const result = await attemptedQuestionsModel.findOne({
       '_id': userId,
@@ -219,8 +219,8 @@ const getLandingNews = (req, res) =>{
     title: 'Hello, This is a message',
     message: 'Hello buddy, this is a presaved message',
     links: [{
-      title: '',
-      link: ''
+      title: 'lklkl',
+      link: 'jjjjj'
     }]
   })
 };
