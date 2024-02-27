@@ -155,25 +155,61 @@ const fetchAttemptedQuestions = async (req, res) => {
     }
 };
 
+// const fetchCourseAttemptedQuestions = async (req, res) => {
+//   try {
+//     const { startingNumber, endingNumber, userId, courseCode } = req.body;
+
+//     const result = await attemptedQuestionsModel.findOne({
+//       '_id': userId,
+//       'questions.courseCode': courseCode,
+//       'questions.questions': { $exists: true, $ne: [] }
+//     },
+//     {
+//       _id: 0,
+//       'questions.$': 1,
+//     })
+//     .sort({ 'questions.date': -1 })
+//     .limit(endingNumber - startingNumber + 1);
+
+//     if (!result) {
+//       // Create a new document with the specified _id
+//       const newDocument = new attemptedQuestionsModel({ _id: userId });
+//       await newDocument.save();
+
+//       return res.status(200).json({ sortedQuestions: [] });
+//     }
+
+//     if (!result.questions || result.questions.length === 0) {
+//       return res.status(200).json({ sortedQuestions: [] });
+//     }
+
+//     const sortedQuestions = result.questions[0];
+
+//     res.status(200).json({ sortedQuestions });
+//   } catch (error) {
+//     console.error('Error fetching and sorting questions:', error);
+//     res.status(500).json({ error: 'Internal Server Error' });
+//   }
+// };
 const fetchCourseAttemptedQuestions = async (req, res) => {
   try {
     const { startingNumber, endingNumber, userId, courseCode } = req.body;
 
     const result = await attemptedQuestionsModel.findOne({
       '_id': userId,
-      'questions.courseCode': courseCode,
-      'questions.questions': { $exists: true, $ne: [] }
+      // 'questions.courseCode': courseCode,
+      // 'questions.questions': { $exists: true, $ne: [] }
     },
     {
       _id: 0,
-      'questions.$': 1,
+      // 'questions.$': 1,
     })
-    .sort({ 'questions.date': -1 })
-    .limit(endingNumber - startingNumber + 1);
+    // .sort({ 'questions.date': -1 })
+    // .limit(endingNumber - startingNumber + 1);
 
     if (!result) {
       // Create a new document if not found
-      const newDocument = new attemptedQuestionsModel();
+      const newDocument = new attemptedQuestionsModel({ _id: userId });
       await newDocument.save();
 
       return res.status(200).json({ sortedQuestions: [] });
@@ -183,7 +219,7 @@ const fetchCourseAttemptedQuestions = async (req, res) => {
       return res.status(200).json({ sortedQuestions: [] });
     }
 
-    const sortedQuestions = result.questions[0];
+    const sortedQuestions = result;
 
     res.status(200).json({ sortedQuestions });
   } catch (error) {
@@ -191,7 +227,6 @@ const fetchCourseAttemptedQuestions = async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };
-
 
 const addAttemptedQuestion = async (req, res) => {
   try {

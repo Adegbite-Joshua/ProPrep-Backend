@@ -17,7 +17,7 @@ const attemptedQuestionsSchema = new mongoose.Schema({
     _id: { type: String },
     questions: [
         {
-            courseCode: { required: true, type: String },
+            courseCode: { type: String },
             questions: [
                 {
                     type: { type: String },
