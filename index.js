@@ -14,6 +14,7 @@ const { faa101 } = require('./questions/first_semester/faa101')
 const { gns101 } = require('./questions/first_semester/gns101')
 const { lib101 } = require('./questions/first_semester/lib101')
 const { mth101 } = require('./questions/first_semester/mth101')
+const { phy101 } = require('./questions/first_semester/phy101')
 
 
 // app.use(cors({ origin: '*' }));
@@ -94,7 +95,8 @@ const validateQuestions = (questions) => {
 //   const questions = [...faa101]; 
 //   const questions = [...gns101]; 
 //   const questions = [...lib101]; 
-  const questions = [...mth101]; 
+//   const questions = [...mth101]; 
+  const questions = [...phy101]; 
   
   const validationResults = validateQuestions(questions);
   
