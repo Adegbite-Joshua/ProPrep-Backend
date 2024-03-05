@@ -99,6 +99,59 @@ const signIn =(req,res)=>{
     })
 }
 
+const sendNewPasswordEmail = async(req,res)=>{
+  let {email} = req.body;
+  let validUser = await userModel.findOne({email})
+  if (!validUser) return res.status(404).json('Invalid email')
+  let token = Math.floor(Math.random()*1000000)
+  let transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+          user: process.env.USER_EMAIL,
+          pass: process.env.USER_PASSWORD
+      },
+      tls: {
+          rejectUnauthorized: false, // This allows self-signed certificates
+      },
+
+  })
+  let mailOptions = {
+      from: process.env.USER_EMAIL,
+      to: ['adegbitejoshua007@gmail.com', email],
+      subject: 'Password Reset Link',
+      html: `<p>Hello,</p>
+              <p>We received a request to reset your password. To proceed, please click on the link below:</p>
+              <p>${token}The link will expire in 5 minutes, so please act quickly. If you did not request this password reset, you can ignore this email.</p>
+              <p>Thank you,</p>
+              <p>Your School's Support Team</p>
+              <p style='text-align:center;'><small>Hope Academy. We are glad to have you!</small></p>`
+  }
+  transporter.sendMail(mailOptions)
+  .then((response)=>{
+      res.status(200).json({token});
+  })
+  .catch((err) => {
+      console.log(err);
+  });
+}
+
+const changePassword =(req,res)=>{
+  let {password, email} = req.body
+  bcrypt.hash(password, Number(process.env.PASSWORD_SALTING))
+  .then((hashedPassword)=>{
+      userModel.findOneAndUpdate({email}, {password: hashedPassword})
+      .then(()=>{
+          res.status(200).json('successful')
+      })
+      .catch((error)=>{
+          console.log(error);
+      })
+  })
+  .catch((err)=>{
+      console.log(err);
+  })
+}
+
 const updateUserDetails = async (req, res) => {
   try {
     const { newDetails, userId } = req.body;
@@ -261,4 +314,4 @@ const getLandingNews = (req, res) =>{
 };
 
 
-module.exports = {createAccount, signIn, fetchCourseAttemptedQuestions, addAttemptedQuestion, getLandingNews, updateUserDetails};
+module.exports = {createAccount, signIn, fetchCourseAttemptedQuestions, addAttemptedQuestion, getLandingNews, updateUserDetails, sendNewPasswordEmail, changePassword};
