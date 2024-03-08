@@ -16,13 +16,13 @@ const getRandomQuestions = (array, count) => {
 
 const uploadQuestions = async (req, res) => {
   try {
-    let { level, department, semester, courseCode, questions } = req.body;
+    let { level, department, semester, courseCode, question } = req.body;
 
     const updatedDocument = await questionsModel.findOneAndUpdate(
       { level },
       {
         $push: {
-          [`${department}.${semester}.questions.${courseCode}`]: questions,
+          [`${department}.${semester}.questions.${courseCode}`]: question,
         },
       },
       { upsert: true, new: true, setDefaultsOnInsert: true }
