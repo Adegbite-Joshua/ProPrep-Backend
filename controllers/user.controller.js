@@ -208,57 +208,17 @@ const fetchAttemptedQuestions = async (req, res) => {
     }
 };
 
-// const fetchCourseAttemptedQuestions = async (req, res) => {
-//   try {
-//     const { startingNumber, endingNumber, userId, courseCode } = req.body;
-
-//     const result = await attemptedQuestionsModel.findOne({
-//       '_id': userId,
-//       'questions.courseCode': courseCode,
-//       'questions.questions': { $exists: true, $ne: [] }
-//     },
-//     {
-//       _id: 0,
-//       'questions.$': 1,
-//     })
-//     .sort({ 'questions.date': -1 })
-//     .limit(endingNumber - startingNumber + 1);
-
-//     if (!result) {
-//       // Create a new document with the specified _id
-//       const newDocument = new attemptedQuestionsModel({ _id: userId });
-//       await newDocument.save();
-
-//       return res.status(200).json({ sortedQuestions: [] });
-//     }
-
-//     if (!result.questions || result.questions.length === 0) {
-//       return res.status(200).json({ sortedQuestions: [] });
-//     }
-
-//     const sortedQuestions = result.questions[0];
-
-//     res.status(200).json({ sortedQuestions });
-//   } catch (error) {
-//     console.error('Error fetching and sorting questions:', error);
-//     res.status(500).json({ error: 'Internal Server Error' });
-//   }
-// };
 const fetchCourseAttemptedQuestions = async (req, res) => {
   try {
-    const { startingNumber, endingNumber, userId, courseCode } = req.body;
+    const { startingNumber, endingNumber, userId } = req.body;
 
-    const result = await attemptedQuestionsModel.findOne({
-      '_id': userId,
-      // 'questions.courseCode': courseCode,
-      // 'questions.questions': { $exists: true, $ne: [] }
-    },
-    {
-      _id: 0,
-      // 'questions.$': 1,
-    })
-    // .sort({ 'questions.date': -1 })
-    // .limit(endingNumber - startingNumber + 1);
+    const result = await attemptedQuestionsModel.findOne(
+      { _id: userId },
+      {
+        _id: 0,
+        questions: { $slice: [startingNumber, endingNumber - startingNumber] }
+      }
+    );
 
     if (!result) {
       // Create a new document if not found
@@ -272,9 +232,9 @@ const fetchCourseAttemptedQuestions = async (req, res) => {
       return res.status(200).json({ sortedQuestions: [] });
     }
 
-    const sortedQuestions = result;
+    const sortedQuestions = result.questions;
 
-    res.status(200).json({ sortedQuestions });
+    res.status(200).json(sortedQuestions);
   } catch (error) {
     console.error('Error fetching and sorting questions:', error);
     res.status(500).json({ error: 'Internal Server Error' });
@@ -312,6 +272,5 @@ const getLandingNews = (req, res) =>{
     }]
   })
 };
-
 
 module.exports = {createAccount, signIn, fetchCourseAttemptedQuestions, addAttemptedQuestion, getLandingNews, updateUserDetails, sendNewPasswordEmail, changePassword};

@@ -49,6 +49,8 @@ const generateRandomQuestions = async (req, res) => {
     }
 
     const maxQuestions = Math.min(numberOfQuestions, allQuestions.length);
+    console.log(allQuestions.length)
+    console.log(maxQuestions)
 
     const copyOfQuestions = [...allQuestions];
 
@@ -104,8 +106,8 @@ const generateRandomQuestions = async (req, res) => {
 // };
 
 const generateRandomOfflineQuestions = async (req, res) => {
-  const { level, department, semester, numberOfQuestions } = req.body;
-
+  const { level, department, semester } = req.body;
+  const numberOfQuestions = 100;
   try {
     const document = await questionsModel.findOne({ level }, {
       [`${department}.${semester}.questions`]: 1,

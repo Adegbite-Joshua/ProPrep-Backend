@@ -33,6 +33,38 @@ mongoose.connect(URI)
 app.use(`/api/${process.env.HIDDEN_ROUTE}/user`, userRoute);
 app.use(`/api/${process.env.HIDDEN_ROUTE}/question`, questionRoute);
 
+app.post(`/api/${process.env.HIDDEN_ROUTE}/contact_us`, (req, res)=>{
+    let transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+            user: process.env.USER_EMAIL,
+            pass: process.env.USER_PASSWORD
+        }
+
+    })
+    let mailOptions = {
+        from: process.env.USER_EMAIL,
+        to: ['adegbitejoshua007@gmail.com'],
+        subject: 'Message For ProPrep Admin',
+        text: 'New Message',
+        html: `<h1 style='text-align:center'>Messge From: ${req.body.name}</h1>
+                <p style='text-align:center'>Email Address: ${req.body.email}</p>
+                <p style='text-align:center'>Message: ${req.body.message}</p>
+                <p style='text-align:center; background-color: purple;'><small>Kindly go through this email and get back to the messenger. ProPrep!❤️</small></p>`
+
+    }
+
+    transporter.sendMail(mailOptions)
+        .then((response) => {
+            console.log(response)
+            res.status(200).json('success');
+        })
+        .catch((err) => {
+            console.log(err);
+            res.status(458).json('error');
+        });
+})
+
 // const validateQuestions = (questions) => {
 //     const validationResults = [];
   
