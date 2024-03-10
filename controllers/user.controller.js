@@ -154,7 +154,7 @@ const changePassword =(req,res)=>{
 
 const updateUserDetails = async (req, res) => {
   try {
-    const { newDetails, userId } = req.body;
+    const { ...newDetails, userId } = req.body;
     
     const result = await userModel.findByIdAndUpdate(userId, { $set: newDetails }, { new: true });
 
@@ -164,7 +164,6 @@ const updateUserDetails = async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };
-
 
 const fetchAttemptedQuestions = async (req, res) => {
     try {
