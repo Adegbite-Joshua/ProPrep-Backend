@@ -154,7 +154,7 @@ const changePassword =(req,res)=>{
 
 const updateUserDetails = async (req, res) => {
   try {
-    const { ...newDetails, userId } = req.body;
+    const { userId, ...newDetails } = req.body;
     
     const result = await userModel.findByIdAndUpdate(userId, { $set: newDetails }, { new: true });
 
