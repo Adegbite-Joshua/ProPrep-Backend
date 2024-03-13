@@ -38,10 +38,10 @@ const createAccount = async(req,res)=>{
         // }
         // response = {...response, image_url: uploaded_url};
         // userModel(response).save()
-        attem({
-            _id: response._id,
-            questions: []
-        }).save();
+        // attem({
+        //     _id: response._id,
+        //     questions: []
+        // }).save();
         let transporter = nodemailer.createTransport({
             service: 'gmail',
             auth: {
@@ -56,8 +56,46 @@ const createAccount = async(req,res)=>{
         let mailOptions = {
             from: process.env.USEREMAIL,
             to: [req.body.email],
-            subject: 'hello',
-            html: `hello`
+            subject: 'Welcome To ProPrep!',
+            html: `<body style="font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f7f7f7;">
+
+            <div style="width: 600px; margin: auto; overflow: hidden; padding: 20px; background-color: #fff; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); margin-top: 50px;">
+          
+              <h1 style="color: #6F42C1;">Welcome to ProPrep!</h1>
+          
+              <p style="font-size: 16px; line-height: 1.6em; color: #666;">
+                Dear ${rest.fullName},
+              </p>
+          
+              <p style="font-size: 16px; line-height: 1.6em; color: #666;">
+                Thank you for creating an account on ProPrep – your ultimate destination for CBT quiz preparation. We are excited to have you on board!
+              </p>
+          
+              <p style="font-size: 16px; line-height: 1.6em; color: #666;">
+                At ProPrep, we provide a comprehensive collection of CBT quiz questions tailored for 100 level exams. Our goal is to help you improve your performance by offering quizzes designed to enhance your understanding of key concepts.
+              </p>
+          
+              <p style="font-size: 16px; line-height: 1.6em; color: #666;">
+                To get started and boost your preparation:
+              </p>
+          
+              <ul style="font-size: 16px; line-height: 1.6em; color: #666; padding-left: 20px;">
+                <li>Explore our 100 level quiz questions to target specific topics.</li>
+                <li>Take quizzes regularly to reinforce your knowledge.</li>
+                <li>Track your performance and monitor your progress over time.</li>
+              </ul>
+          
+              <p style="font-size: 16px; line-height: 1.6em; color: #666;">
+                We believe that effective preparation is the key to success, and our platform is designed to support your journey toward achieving your academic goals.
+              </p>          
+              <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd; text-align: center; color: #666;">
+                <p style="font-size: 16px; line-height: 1.6em;">If you have any questions or need assistance, feel free to contact our support team at <a href="mailto:support@proprep.com" style="color: #6F42C1;">support@proprep.com</a>.</p>
+                <p style="font-size: 16px; line-height: 1.6em;">Best regards,<br/>The ProPrep Team</p>
+              </div>
+          
+            </div>
+          
+          </body>`
         }
         transporter.sendMail(mailOptions)
         .then((response)=>{
