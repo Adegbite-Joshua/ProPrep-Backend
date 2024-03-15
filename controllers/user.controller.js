@@ -18,8 +18,6 @@ const getRandomQuestions = (array, count)=> {
 }
   
 
-
-
 cloudinary.config({
     cloud_name: process.env.CLOUDNAME,
     api_key: process.env.CLOUDKEY,
@@ -31,7 +29,7 @@ const createAccount = async(req,res)=>{
     // let uploaded_url = image_url;
     userModel({...rest}).save()
     .then(async(response)=>{
-        res.status(201).json('saved');
+        res.status(201).json({message: 'successful'});
         // if (new_image_url) {
         //     const uploadImage = await cloudinary.uploader.upload(req.body.image_url, {public_id: `proprep_${Math.round(Math.random()*10000)}${req.body.email}`});
         //     uploaded_url = uploadImage.secure_url;
@@ -54,7 +52,7 @@ const createAccount = async(req,res)=>{
     
         })
         let mailOptions = {
-            from: process.env.USEREMAIL,
+            from: process.env.USER_EMAIL,
             to: [req.body.email],
             subject: 'Welcome To ProPrep!',
             html: `<body style="font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f7f7f7;">
@@ -117,7 +115,7 @@ const createAccount = async(req,res)=>{
 
 const signIn =(req,res)=>{
     let {password,  email} = req.body;
-    userModel.findOne({email:req.body.email})
+    userModel.findOne({email})
     .then((response)=>{
        if(response){
             response.validatePassword(password, (error, same)=>{
