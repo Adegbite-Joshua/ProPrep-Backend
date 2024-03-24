@@ -8,13 +8,20 @@ app.use(express.urlencoded({ extended: true, limit: '200mb' }))
 app.use(express.json({limit: '200mb'}))
 const userRoute = require('./routes/user.route');
 const questionRoute = require('./routes/question.route');
-// const { bio101 } = require('./questions/first_semester/bio101')
-// const { chm101 } = require('./questions/first_semester/chm101')
-// const { faa101 } = require('./questions/first_semester/faa101')
-// const { gns101 } = require('./questions/first_semester/gns101')
-// const { lib101 } = require('./questions/first_semester/lib101')
-// const { mth101 } = require('./questions/first_semester/mth101')
-// const { phy101 } = require('./questions/first_semester/phy101')
+const { bio101 } = require('./questions/first_semester/bio101')
+const { chm101 } = require('./questions/first_semester/chm101')
+const { faa101 } = require('./questions/first_semester/faa101')
+const { gns101 } = require('./questions/first_semester/gns101')
+const { lib101 } = require('./questions/first_semester/lib101')
+const { mth101 } = require('./questions/first_semester/mth101')
+const { phy101 } = require('./questions/first_semester/phy101')
+const { acc101 } = require('./questions/first_semester/acc101')
+const { acc108 } = require('./questions/first_semester/acc108')
+const { mgt102 } = require('./questions/first_semester/mgt102')
+const { mgt106 } = require('./questions/first_semester/mgt106')
+const { mgt110 } = require('./questions/first_semester/mgt110')
+const { mgt112 } = require('./questions/first_semester/mgt112')
+const { questionsModel } = require('./models/question.model')
 
 
 app.use(cors({ origin: '*' }));
@@ -25,6 +32,33 @@ const URI = process.env.URI
 mongoose.connect(URI)
 .then((res)=>{
     console.log('connected');
+    let questions = acc108;
+    try {
+      let level = '100'
+      //   let department = 'science'
+      let department = 'commercial'
+      // let department = 'general'
+      let semester = 'firstSemester'
+      let courseCode = 'acc108'
+      
+      
+      // questions.map(async(question)=>{
+      //   const updatedDocument = await questionsModel.findOneAndUpdate(
+      //     { level },
+      //     {
+      //       $push: {
+      //         [`${department}.${semester}.questions.${courseCode}`]: question,
+      //       },
+      //     },
+      //     { upsert: true, new: true, setDefaultsOnInsert: true, projection: { _id: 1 } }
+      //     );
+          
+      //     console.log(question.question);
+      //     console.log('Question uploaded successfully:', updatedDocument);
+      // })
+    } catch (error) {
+      console.error('Error uploading questions:', error);
+    }
 })
 .catch((err)=>{
     console.log(err);
@@ -122,15 +156,16 @@ app.post(`/api/${process.env.HIDDEN_ROUTE}/contact_us`, (req, res)=>{
 //   };
   
   
-//   const questions = [...bio101]; 
-//   const questions = [...chm101]; 
-//   const questions = [...faa101]; 
-//   const questions = [...gns101]; 
-//   const questions = [...lib101]; 
-//   const questions = [...mth101]; 
-  // const questions = [...phy101]; 
+// //   const questions = [...bio101]; 
+// //   const questions = [...chm101]; 
+// //   const questions = [...faa101]; 
+// //   const questions = [...gns101]; 
+// //   const questions = [...lib101]; 
+// //   const questions = [...mth101]; 
+// //   const questions = [...phy101]; 
+//   const questions = [...mgt112]; 
   
-  // const validationResults = validateQuestions(questions);
+//   const validationResults = validateQuestions(questions);
   
 //   if (validationResults.length > 0) {
 //     console.log('Validation failed with the following issues:');
@@ -138,7 +173,8 @@ app.post(`/api/${process.env.HIDDEN_ROUTE}/contact_us`, (req, res)=>{
 //   } else {
 //     console.log('All questions passed validation.');
 //   }
-  
+
+    
 
 app.listen(PORT, startServer)
 

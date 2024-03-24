@@ -14,25 +14,32 @@ const questionsSchema = new mongoose.Schema({
     general: {
         firstSemester: {
             questions: {
-                mth101: [
-                    {
-                        type: { type: String },
-                        question: { type: String },
-                        options: { type: Array },
-                        correctAnswer: { type: String },
-                        solution: { type: String }
-                    },
-                ],
-            },            
+                type: Map,
+                of: [questionSchema]
+            },        
         },
         secondSemester: {
             questions: {
                 type: Map,
                 of: [questionSchema]
-              },
+            },
         }
     },
     science: {
+        firstSemester: {
+            questions: {
+                type: Map,
+                of: [questionSchema]
+            },        
+        },
+        secondSemester: {
+            questions: {
+                type: Map,
+                of: [questionSchema]
+            },
+        }
+    },
+    commercial: {
         firstSemester: {
             questions: {
                 type: Map,

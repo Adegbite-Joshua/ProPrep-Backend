@@ -260,11 +260,13 @@ const fetchCourseAttemptedQuestions = async (req, res) => {
       const newDocument = new attemptedQuestionsModel({ _id: userId });
       await newDocument.save();
 
-      return res.status(200).json({ sortedQuestions: [] });
+      let sortedQuestions = [];
+      return res.status(200).json(sortedQuestions);
     }
 
     if (!result.questions || result.questions.length === 0) {
-      return res.status(200).json({ sortedQuestions: [] });
+      let sortedQuestions = [];
+      return res.status(200).json(sortedQuestions);
     }
 
     const sortedQuestions = result.questions;
