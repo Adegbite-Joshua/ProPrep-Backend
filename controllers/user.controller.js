@@ -300,19 +300,28 @@ const addAttemptedQuestion = async (req, res) => {
 };
 
 const getLandingNews = (req, res) =>{
-  res.status(200).json(`
-  <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-    <View style={{ backgroundColor: 'white', padding: 16, borderRadius: 8, alignItems: 'center', shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.25, shadowRadius: 3.84, elevation: 5 }}>
-      <Text style={{ fontSize: 24, fontWeight: 'bold', marginBottom: 8 }}>Welcome to ProPrep!</Text>
-      <Text style={{ marginBottom: 16 }}>Thank you for choosing our app for your preparation. We are excited to help you achieve excellence in your endeavors.</Text>
+  // res.status(200).json(`
+  // <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+  //   <View style={{ backgroundColor: 'white', padding: 16, borderRadius: 8, alignItems: 'center', shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.25, shadowRadius: 3.84, elevation: 5 }}>
+  //     <Text style={{ fontSize: 24, fontWeight: 'bold', marginBottom: 8 }}>Welcome to ProPrep!</Text>
+  //     <Text style={{ marginBottom: 16 }}>Thank you for choosing our app for your preparation. We are excited to help you achieve excellence in your endeavors.</Text>
       
-      <TouchableOpacity onPress={closeModal}>
-        <Text style={{ color: 'blue', fontWeight: 'bold', marginTop: 8 }}>Get Started</Text>
-      </TouchableOpacity>
-    </View>
-  </View>
-  `
-  )
+  //     <TouchableOpacity onPress={closeModal}>
+  //       <Text style={{ color: 'blue', fontWeight: 'bold', marginTop: 8 }}>Get Started</Text>
+  //     </TouchableOpacity>
+  //   </View>
+  // </View>
+  // `
+  // )
+  res.status(200).json({
+    title: 'Welcome to ProPrep!',
+    message: 'Thank you for choosing our app for your preparation. We are excited to help you achieve excellence in your endeavors.',
+    // links: [{
+    //   title: 'Example Link',
+    //   link: 'example.com'
+    // }]
+  })
+  
 };
 
 module.exports = {createAccount, signIn, fetchCourseAttemptedQuestions, addAttemptedQuestion, getLandingNews, updateUserDetails, sendNewPasswordEmail, changePassword};
