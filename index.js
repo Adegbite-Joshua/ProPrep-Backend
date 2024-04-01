@@ -32,33 +32,33 @@ const URI = process.env.URI
 mongoose.connect(URI)
 .then((res)=>{
     console.log('connected');
-    let questions = acc108;
-    try {
-      let level = '100'
-      //   let department = 'science'
-      let department = 'commercial'
-      // let department = 'general'
-      let semester = 'firstSemester'
-      let courseCode = 'acc108'
+    // let questions = acc108;
+    // try {
+    //   let level = '100'
+    //   //   let department = 'science'
+    //   let department = 'commercial'
+    //   // let department = 'general'
+    //   let semester = 'firstSemester'
+    //   let courseCode = 'acc108'
       
       
-      // questions.map(async(question)=>{
-      //   const updatedDocument = await questionsModel.findOneAndUpdate(
-      //     { level },
-      //     {
-      //       $push: {
-      //         [`${department}.${semester}.questions.${courseCode}`]: question,
-      //       },
-      //     },
-      //     { upsert: true, new: true, setDefaultsOnInsert: true, projection: { _id: 1 } }
-      //     );
+    //   // questions.map(async(question)=>{
+    //   //   const updatedDocument = await questionsModel.findOneAndUpdate(
+    //   //     { level },
+    //   //     {
+    //   //       $push: {
+    //   //         [`${department}.${semester}.questions.${courseCode}`]: question,
+    //   //       },
+    //   //     },
+    //   //     { upsert: true, new: true, setDefaultsOnInsert: true, projection: { _id: 1 } }
+    //   //     );
           
-      //     console.log(question.question);
-      //     console.log('Question uploaded successfully:', updatedDocument);
-      // })
-    } catch (error) {
-      console.error('Error uploading questions:', error);
-    }
+    //   //     console.log(question.question);
+    //   //     console.log('Question uploaded successfully:', updatedDocument);
+    //   // })
+    // } catch (error) {
+    //   console.error('Error uploading questions:', error);
+    // }
 })
 .catch((err)=>{
     console.log(err);

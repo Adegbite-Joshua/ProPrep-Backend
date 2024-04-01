@@ -126,14 +126,14 @@ const generateRandomOfflineQuestions = async (req, res) => {
     const maxQuestions = Math.min(numberOfQuestions, allQuestions.length);
 
     const copyOfQuestions = [...allQuestions];
-
+   
     for (let i = copyOfQuestions.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [copyOfQuestions[i], copyOfQuestions[j]] = [copyOfQuestions[j], copyOfQuestions[i]];
     }
 
     const randomQuestions = copyOfQuestions.slice(0, maxQuestions);
-    res.status(200).json(randomQuestions[1]);
+    res.status(200).json(randomQuestions[0]);
   } catch (error) {
     console.error('Error generating random questions:', error);
     res.status(500).json({ error });
