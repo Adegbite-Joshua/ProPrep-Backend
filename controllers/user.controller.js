@@ -115,6 +115,7 @@ const createAccount = async(req,res)=>{
 
 const signIn =(req,res)=>{
     let {password,  email} = req.body;
+    console.log(req.headers);
     userModel.findOne({email})
     .then((response)=>{
        if(response){
