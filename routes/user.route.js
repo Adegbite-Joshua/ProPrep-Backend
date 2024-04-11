@@ -1,8 +1,9 @@
 const express = require('express')
-const { createAccount, signIn, fetchCourseAttemptedQuestions, addAttemptedQuestion, getLandingNews, updateUserDetails, sendNewPasswordEmail, changePassword } = require('../controllers/user.controller')
+const { createAccount, createAccount2, signIn, fetchCourseAttemptedQuestions, addAttemptedQuestion, getLandingNews, updateUserDetails, sendNewPasswordEmail, changePassword } = require('../controllers/user.controller')
 const router = express.Router()
 
 router.post('/create_account', createAccount)
+router.post('/create_account2', createAccount2)
 router.post('/sign_in', signIn)
 router.post('/send_forgot_password_token', sendNewPasswordEmail)
 router.post('/reset_password', changePassword)
