@@ -5,7 +5,7 @@ const bcrypt = require('bcryptjs')
 const nodemailer = require('nodemailer');
 const { userModel, attemptedQuestionsModel } = require("../models/user.model");
 const { Resend } = require('resend');
-const { sign } = require('jsonwebtoken');
+const { sign, verify } = require('jsonwebtoken');
 
 
 const getRandomQuestions = (array, count) => {
@@ -20,6 +20,7 @@ const getRandomQuestions = (array, count) => {
 }
 
 const resend = new Resend(process.env.RESEND_API_KEY);
+const jwtSecret = process.env.JWTSECRET;
 
 
 cloudinary.config({
@@ -119,10 +120,9 @@ const createAccount = async (req, res) => {
 const createAccount2 = async (req, res) => {
   let { image_url, new_image_url, ...rest } = req.body;
   // let uploaded_url = image_url;
-  userModel({ ...rest }).save()
+  userModel({ ...rest, isEmailVerified: false }).save()
     .then(async (response) => {
       res.status(201).json({ message: 'successful' });
-      const jwtSecret = process.env.JWTSECRET;
       const tokenExpiration = 60;
       const token = sign({email: rest.email}, jwtSecret, {expiresIn: tokenExpiration});
       const { data, error } = await resend.emails.send({
@@ -256,6 +256,61 @@ const signIn = (req, res) => {
     .catch((error) => {
       console.log(error);
     })
+}
+
+const signIn2 = (req, res) => {
+  let { password, email } = req.body;
+  console.log(req.headers);
+  userModel.findOne({ email })
+    .then((response) => {
+      if (response) {
+        if (!response.isEmailVerified) {
+          res.status(403).json({ message: 'Email address is not verified'});          
+          return;
+        }
+        response.validatePassword(password, (error, same) => {
+          if (same) {
+            // let token = jwt.sign({password, email}, process.env.JWTSECRET);
+            res.status(200).json({ message: 'successful', details: response });
+          } else {
+            res.status(400).json('incorrect password');
+          }
+        })
+      } else {
+        res.status(404).json('wrong email');
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    })
+}
+
+const verifyEmailAddress = async(req, res) => {
+  let { token } = req.body;
+
+  const result = await new Promise((resolve, reject) => {
+    verify(token, jwtSecret, (error, result) => {
+      if (error) {
+        reject(error);
+        res.status(404).json({message: "Invalid token"})
+      } else {
+        resolve(result);
+      }
+    });
+
+    if (result.email) {
+      userModel.findOneAndUpdate({ email: result.email}, {isEmailVerified: true})
+        .then(()=>{
+          res.status(200).json({message: 'Successful'})
+        }).catch(()=>{
+          res.status(404).json({message: "Invalid token"})
+        })
+    } else {
+      res.status(404).json({message: "Invalid token"})
+    }
+  });
+
+
 }
 
 const sendNewPasswordEmail = async (req, res) => {
@@ -447,4 +502,4 @@ const getLandingNews = (req, res) => {
 
 };
 
-module.exports = { createAccount, createAccount2, signIn, fetchCourseAttemptedQuestions, addAttemptedQuestion, getLandingNews, updateUserDetails, sendNewPasswordEmail, changePassword };
+module.exports = { createAccount, createAccount2, signIn, signIn2, verifyEmailAddress, fetchCourseAttemptedQuestions, addAttemptedQuestion, getLandingNews, updateUserDetails, sendNewPasswordEmail, changePassword };
