@@ -8,23 +8,23 @@ app.use(express.urlencoded({ extended: true, limit: '200mb' }))
 app.use(express.json({limit: '200mb'}))
 const userRoute = require('./routes/user.route');
 const questionRoute = require('./routes/question.route');
-const { bio101 } = require('./questions/first_semester/bio101')
-const { chm101 } = require('./questions/first_semester/chm101')
-const { faa101 } = require('./questions/first_semester/faa101')
-const { gns101 } = require('./questions/first_semester/gns101')
-const { lib101 } = require('./questions/first_semester/lib101')
-const { mth101 } = require('./questions/first_semester/mth101')
-const { phy101 } = require('./questions/first_semester/phy101')
-const { acc101 } = require('./questions/first_semester/acc101')
-const { acc108 } = require('./questions/first_semester/acc108')
-const { mgt102 } = require('./questions/first_semester/mgt102')
-const { mgt106 } = require('./questions/first_semester/mgt106')
-const { mgt110 } = require('./questions/first_semester/mgt110')
-const { mgt112 } = require('./questions/first_semester/mgt112')
-const { questionsModel } = require('./models/question.model')
-const { acc102 } = require('./questions/first_semester/acc102')
-const { eco104 } = require('./questions/first_semester/eco104')
-const { mkt102 } = require('./questions/first_semester/mkt102')
+// const { bio101 } = require('./questions/first_semester/bio101')
+// const { chm101 } = require('./questions/first_semester/chm101')
+// const { faa101 } = require('./questions/first_semester/faa101')
+// const { gns101 } = require('./questions/first_semester/gns101')
+// const { lib101 } = require('./questions/first_semester/lib101')
+// const { mth101 } = require('./questions/first_semester/mth101')
+// const { phy101 } = require('./questions/first_semester/phy101')
+// const { acc101 } = require('./questions/first_semester/acc101')
+// const { acc108 } = require('./questions/first_semester/acc108')
+// const { mgt102 } = require('./questions/first_semester/mgt102')
+// const { mgt106 } = require('./questions/first_semester/mgt106')
+// const { mgt110 } = require('./questions/first_semester/mgt110')
+// const { mgt112 } = require('./questions/first_semester/mgt112')
+// const { questionsModel } = require('./models/question.model')
+// const { acc102 } = require('./questions/first_semester/acc102')
+// const { eco104 } = require('./questions/first_semester/eco104')
+// const { mkt102 } = require('./questions/first_semester/mkt102')
 
 
 app.use(cors({ origin: '*' }));
@@ -170,16 +170,16 @@ const validateQuestions = (questions) => {
   
 // const questions = [...acc102]; 
 // const questions = [...eco104]; 
-const questions = [...mkt102]; 
+// const questions = [...mkt102]; 
   
-  const validationResults = validateQuestions(questions);
+//   const validationResults = validateQuestions(questions);
   
-  if (validationResults.length > 0) {
-    console.log('Validation failed with the following issues:');
-    validationResults.forEach((result) => console.log(result));
-  } else {
-    console.log('All questions passed validation.');
-  }
+//   if (validationResults.length > 0) {
+//     console.log('Validation failed with the following issues:');
+//     validationResults.forEach((result) => console.log(result));
+//   } else {
+//     console.log('All questions passed validation.');
+//   }
 
     
 
