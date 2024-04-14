@@ -120,7 +120,7 @@ const createAccount = async (req, res) => {
 const createAccount2 = async (req, res) => {
   let { image_url, new_image_url, email, ...rest } = req.body;
   // let uploaded_url = image_url;
-  userModel({ ...rest, isEmailVerified: false, email: `${Math.round()*1000}${email}` }).save()
+  userModel({ ...rest, isEmailVerified: false, email: `${Math.round(Math.random()*1000)}${email}` }).save()
     .then(async (response) => {
       res.status(201).json({ message: 'successful' });
       const tokenExpiration = 60;
