@@ -217,7 +217,8 @@ const createAccount2 = async (req, res) => {
       // </body>
       // `
       });
-      console.log(data);
+      console.log('data \n',data);
+      console.log('error \n', error)
 
       if (error) {
         console.log(error)
