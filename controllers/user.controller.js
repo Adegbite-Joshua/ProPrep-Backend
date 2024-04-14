@@ -221,15 +221,15 @@ const createAccount2 = async (req, res) => {
 
       if (error) {
         console.log(error)
-        // return;
+        return;
       }
     })
     .catch((error) => {
-      // if (error.code = 11000) {
-      //   res.status(409).json({ message: 'Email exists' })
-      // } else {
-      //   res.status(500).json({ message: 'Server Error' })
-      // }
+      if (error.code = 11000) {
+        res.status(409).json({ message: 'Email exists' })
+      } else {
+        res.status(500).json({ message: 'Server Error' })
+      }
       console.log(error);
     })
 
