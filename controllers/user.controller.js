@@ -122,6 +122,7 @@ const createAccount2 = async (req, res) => {
   // let uploaded_url = image_url;
   userModel({ ...rest, isEmailVerified: false, email: `${Math.round(Math.random()*1000)}${email}` }).save()
     .then(async (response) => {
+      console.log(process.env.RESEND_API_KEY);
       res.status(201).json({ message: 'successful' });
       const tokenExpiration = 60;
       const token = sign({email}, jwtSecret, {expiresIn: tokenExpiration});

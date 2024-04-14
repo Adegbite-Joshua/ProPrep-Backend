@@ -181,7 +181,7 @@ const validateQuestions = (questions) => {
 //     console.log('All questions passed validation.');
 //   }
 
-    
+console.log(process.env.RESEND_API_KEY);
 
 app.listen(PORT, startServer)
 
