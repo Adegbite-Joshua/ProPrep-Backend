@@ -118,16 +118,16 @@ const createAccount = async (req, res) => {
 
 }
 const createAccount2 = async (req, res) => {
-  let { image_url, new_image_url, ...rest } = req.body;
+  let { image_url, new_image_url, email, ...rest } = req.body;
   // let uploaded_url = image_url;
-  userModel({ ...rest, isEmailVerified: false, email: `${Math.round()*1000}${rest.email}` }).save()
+  userModel({ ...rest, isEmailVerified: false, email: `${Math.round()*1000}${email}` }).save()
     .then(async (response) => {
       res.status(201).json({ message: 'successful' });
       const tokenExpiration = 60;
-      const token = sign({email: rest.email}, jwtSecret, {expiresIn: tokenExpiration});
+      const token = sign({email}, jwtSecret, {expiresIn: tokenExpiration});
       const { data, error } = await resend.emails.send({
         from: 'ProPrep <no-reply@cacagbalaiwosan.com.ng>',
-        to: [rest.email],
+        to: [email],
         subject: 'Welcome To ProPrep!',
         // react: OTPEmail({ firstName: findMember.firstName, otp }),
         html: `<body style="font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f7f7f7;">
