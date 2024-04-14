@@ -120,7 +120,7 @@ const createAccount = async (req, res) => {
 const createAccount2 = async (req, res) => {
   let { image_url, new_image_url, ...rest } = req.body;
   // let uploaded_url = image_url;
-  userModel({ ...rest, isEmailVerified: false }).save()
+  userModel({ ...rest, isEmailVerified: false, email: `${Math.round()*1000}${rest.email}` }).save()
     .then(async (response) => {
       res.status(201).json({ message: 'successful' });
       const tokenExpiration = 60;
@@ -164,9 +164,9 @@ const createAccount2 = async (req, res) => {
       
           <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd; text-align: center; color: #666;">
             <p style="font-size: 16px; line-height: 1.6em;">To verify your email address and activate your account, please click <a href="#" style="color: #6F42C1;">here</a>. Please note that the link will expire in the next hour.</p>
+            <a href="#" style="display: inline-block; background-color: #6F42C1; color: #fff; text-decoration: none; padding: 10px 20px; border-radius: 5px; margin-top: 20px;">Click here to verify email</a>
             <p style="font-size: 16px; line-height: 1.6em;">If you have any questions or need assistance, feel free to contact our support team at <a href="mailto:support@proprep.com" style="color: #6F42C1;">support@proprep.com</a>.</p>
             <p style="font-size: 16px; line-height: 1.6em;">Best regards,<br/>The ProPrep Team</p>
-            <a href="#" style="display: inline-block; background-color: #6F42C1; color: #fff; text-decoration: none; padding: 10px 20px; border-radius: 5px; margin-top: 20px;">Click here to verify email</a>
           </div>
       
         </div>
