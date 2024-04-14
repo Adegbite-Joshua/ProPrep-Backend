@@ -164,8 +164,8 @@ const createAccount2 = async (req, res) => {
           </p>          
       
           <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd; text-align: center; color: #666;">
-            <p style="font-size: 16px; line-height: 1.6em;">To verify your email address and activate your account, please click <a href="#" style="color: #6F42C1;">here</a>. Please note that the link will expire in the next hour.</p>
-            <a href="#" style="display: inline-block; background-color: #6F42C1; color: #fff; text-decoration: none; padding: 10px 20px; border-radius: 5px; margin-top: 20px;">Click here to verify email</a>
+            <p style="font-size: 16px; line-height: 1.6em;">To verify your email address and activate your account, please click <a href="https://proprepweb.vercel.app/user/verify_email_address/${token}" style="color: #6F42C1;">here</a>. Please note that the link will expire in the next hour.</p>
+            <a href="https://proprepweb.vercel.app/user/verify_email_address/${token}" style="display: inline-block; background-color: #6F42C1; color: #fff; text-decoration: none; padding: 10px 20px; border-radius: 5px; margin-top: 20px;">Click here to verify email</a>
             <p style="font-size: 16px; line-height: 1.6em;">If you have any questions or need assistance, feel free to contact our support team at <a href="mailto:support@proprep.com" style="color: #6F42C1;">support@proprep.com</a>.</p>
             <p style="font-size: 16px; line-height: 1.6em;">Best regards,<br/>The ProPrep Team</p>
           </div>
@@ -280,6 +280,58 @@ const signIn2 = (req, res) => {
         })
       } else {
         res.status(404).json('wrong email');
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    })
+}
+
+const sendVerificationEmail = (req, res) => {
+  let { email } = req.body;
+  // let uploaded_url = image_url;
+  userModel.findOne({ email })
+    .then(async (response) => {
+      if(!response){
+        res.status(404).json({ message: 'Invalid email address' });
+        return
+      }
+      res.status(200).json({ message: 'successful' });
+      const tokenExpiration = 60;
+      const token = sign({email}, jwtSecret, {expiresIn: tokenExpiration});
+      const { data, error } = await resend.emails.send({
+        from: 'ProPrep <no-reply@cacagbalaiwosan.com.ng>',
+        to: [email],
+        subject: 'Welcome To ProPrep!',
+        // react: OTPEmail({ firstName: findMember.firstName, otp }),
+        html: `<body style="font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f7f7f7;">
+
+        <div style="width: 600px; margin: auto; overflow: hidden; padding: 20px; background-color: #fff; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); margin-top: 50px;">
+      
+          <h1 style="color: #6F42C1;">Welcome to ProPrep!</h1>
+      
+          <p style="font-size: 16px; line-height: 1.6em; color: #666;">
+            Dear ${response.fullName},
+          </p>
+      
+          <p style="font-size: 16px; line-height: 1.6em; color: #666;">
+            To verify your email address and activate your account, please click the button below. Please note that the link will expire in the next hour.
+          </p>
+      
+          <div style="text-align: center; margin-top: 30px;">
+            <a href="https://proprepweb.vercel.app/user/verify_email_address/${token}" style="display: inline-block; background-color: #6F42C1; color: #fff; text-decoration: none; padding: 10px 20px; border-radius: 5px;">Verify Email</a>
+          </div>
+      
+        </div>
+      
+      </body>`
+      });
+      console.log('data \n',data);
+      console.log('error \n', error)
+
+      if (error) {
+        console.log(error)
+        return;
       }
     })
     .catch((error) => {
@@ -504,4 +556,4 @@ const getLandingNews = (req, res) => {
 
 };
 
-module.exports = { createAccount, createAccount2, signIn, signIn2, verifyEmailAddress, fetchCourseAttemptedQuestions, addAttemptedQuestion, getLandingNews, updateUserDetails, sendNewPasswordEmail, changePassword };
+module.exports = { createAccount, createAccount2, signIn, signIn2, sendVerificationEmail, verifyEmailAddress, fetchCourseAttemptedQuestions, addAttemptedQuestion, getLandingNews, updateUserDetails, sendNewPasswordEmail, changePassword };
