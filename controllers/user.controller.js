@@ -124,7 +124,7 @@ const createAccount2 = async (req, res) => {
     .then(async (response) => {
       console.log(process.env.RESEND_API_KEY);
       res.status(201).json({ message: 'successful' });
-      const tokenExpiration = 60;
+      const tokenExpiration = Math.floor(Date.now() / 1000) + (2 * 60 * 60);
       const token = sign({email}, jwtSecret, {expiresIn: tokenExpiration});
       const { data, error } = await resend.emails.send({
         from: 'ProPrep <no-reply@cacagbalaiwosan.com.ng>',
@@ -297,7 +297,7 @@ const sendVerificationEmail = (req, res) => {
         return
       }
       res.status(200).json({ message: 'successful' });
-      const tokenExpiration = 60;
+      const tokenExpiration = Math.floor(Date.now() / 1000) + (2 * 60 * 60);
       const token = sign({email}, jwtSecret, {expiresIn: tokenExpiration});
       const { data, error } = await resend.emails.send({
         from: 'ProPrep <no-reply@cacagbalaiwosan.com.ng>',
@@ -341,7 +341,7 @@ const sendVerificationEmail = (req, res) => {
 
 const verifyEmailAddress = async(req, res) => {
   let { token } = req.body;
-
+  console.log(token);
   const result = await new Promise((resolve, reject) => {
     verify(token, jwtSecret, (error, result) => {
       if (error) {
