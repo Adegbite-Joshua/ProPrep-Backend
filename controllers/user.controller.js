@@ -117,6 +117,7 @@ const createAccount = async (req, res) => {
     })
 
 }
+
 const createAccount2 = async (req, res) => {
   let { image_url, new_image_url, email, ...rest } = req.body;
   // let uploaded_url = image_url;
@@ -124,7 +125,7 @@ const createAccount2 = async (req, res) => {
     .then(async (response) => {
       console.log(process.env.RESEND_API_KEY);
       res.status(201).json({ message: 'successful' });
-      const tokenExpiration = Math.floor(Date.now() / 1000) + (2 * 60 * 60);
+      const tokenExpiration = '1h';
       const token = sign({email}, jwtSecret, {expiresIn: tokenExpiration});
       const { data, error } = await resend.emails.send({
         from: 'ProPrep <no-reply@cacagbalaiwosan.com.ng>',
@@ -262,7 +263,6 @@ const signIn = (req, res) => {
 
 const signIn2 = (req, res) => {
   let { password, email } = req.body;
-  console.log(req.headers);
   userModel.findOne({ email })
     .then((response) => {
       if (response) {
@@ -297,8 +297,9 @@ const sendVerificationEmail = (req, res) => {
         return
       }
       res.status(200).json({ message: 'successful' });
-      const tokenExpiration = Math.floor(Date.now() / 1000) + (2 * 60 * 60);
+      const tokenExpiration = '1h';
       const token = sign({email}, jwtSecret, {expiresIn: tokenExpiration});
+      console.log('response');
       const { data, error } = await resend.emails.send({
         from: 'ProPrep <no-reply@cacagbalaiwosan.com.ng>',
         to: [email],
