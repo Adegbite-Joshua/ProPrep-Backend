@@ -480,15 +480,15 @@ const fetchAttemptedQuestions = async (req, res) => {
 const fetchCourseAttemptedQuestions = async (req, res) => {
   try {
     const { startingNumber, endingNumber, userId } = req.body;
-
+    console.log(req.body);
     const result = await attemptedQuestionsModel.findOne(
       { _id: userId },
       {
-        _id: 0,
         questions: { $slice: [startingNumber, endingNumber - startingNumber] }
       }
     );
 
+    console.log(result);
     if (!result) {
       // Create a new document if not found
       const newDocument = new attemptedQuestionsModel({ _id: userId });
