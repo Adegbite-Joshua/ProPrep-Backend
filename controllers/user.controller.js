@@ -342,7 +342,6 @@ const sendVerificationEmail = (req, res) => {
 
 const verifyEmailAddress = async(req, res) => {
   let { token } = req.body;
-  console.log(token);
   const result = await new Promise((resolve, reject) => {
     verify(token, jwtSecret, (error, result) => {
       if (error) {
@@ -352,19 +351,18 @@ const verifyEmailAddress = async(req, res) => {
         resolve(result);
       }
     });
-
-    if (result.email) {
-      userModel.findOneAndUpdate({ email: result.email}, {isEmailVerified: true})
-        .then(()=>{
-          res.status(200).json({message: 'Successful'})
-        }).catch(()=>{
-          res.status(404).json({message: "Invalid token"})
-        })
-    } else {
-      res.status(404).json({message: "Invalid token"})
-    }
   });
-
+  
+  if (result.email) {
+    userModel.findOneAndUpdate({ email: result.email}, {isEmailVerified: true})
+      .then(()=>{
+        res.status(200).json({message: 'Successful'})
+      }).catch(()=>{
+        res.status(404).json({message: "Invalid token"})
+      })
+  } else {
+    res.status(404).json({message: "Invalid token"})
+  }
 
 }
 
