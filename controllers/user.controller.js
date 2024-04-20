@@ -6,6 +6,7 @@ const nodemailer = require('nodemailer');
 const { userModel, attemptedQuestionsModel } = require("../models/user.model");
 const { Resend } = require('resend');
 const { sign, verify } = require('jsonwebtoken');
+const { MailerSend, EmailParams, Sender, Recipient } = require("mailersend");
 
 
 const getRandomQuestions = (array, count) => {
@@ -127,12 +128,23 @@ const createAccount2 = async (req, res) => {
       res.status(201).json({ message: 'successful' });
       const tokenExpiration = '1h';
       const token = sign({email}, jwtSecret, {expiresIn: tokenExpiration});
-      const { data, error } = await resend.emails.send({
-        from: 'ProPrep <no-reply@cacagbalaiwosan.com.ng>',
-        to: [email],
-        subject: 'Welcome To ProPrep!',
-        // react: OTPEmail({ firstName: findMember.firstName, otp }),
-        html: `<body style="font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f7f7f7;">
+
+
+      const mailerSend = new MailerSend({
+        apiKey: process.env.MAILER_SEND_API_KEY,
+      });
+      
+      const sentFrom = new Sender("bbbb@trial-vywj2lpz0opg7oqz.mlsender.net", "ProPrep");
+      
+      const recipients = [
+        new Recipient(email,rest.fullName)
+      ];
+
+      const emailParams = new EmailParams()
+        .setFrom(sentFrom)
+        .setTo(recipients)
+        .setSubject("This is a Subject")
+        .setHtml(`<body style="font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f7f7f7;">
 
         <div style="width: 600px; margin: auto; overflow: hidden; padding: 20px; background-color: #fff; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); margin-top: 50px;">
       
@@ -174,7 +186,15 @@ const createAccount2 = async (req, res) => {
         </div>
       
       </body>
-      `
+      `)
+      
+      await mailerSend.email.send(emailParams);
+
+      // const { data, error } = await resend.emails.send({
+      //   from: 'ProPrep <no-reply@cacagbalaiwosan.com.ng>',
+      //   to: [email],
+      //   subject: 'Welcome To ProPrep!',
+      //   // react: OTPEmail({ firstName: findMember.firstName, otp }),
       //   html: `<body style="font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f7f7f7;">
 
       //   <div style="width: 600px; margin: auto; overflow: hidden; padding: 20px; background-color: #fff; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); margin-top: 50px;">
@@ -208,24 +228,67 @@ const createAccount2 = async (req, res) => {
       //     </p>          
       
       //     <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd; text-align: center; color: #666;">
-      //       <p style="font-size: 16px; line-height: 1.6em;">To verify your email address and activate your account, please click <a href="https://proprepweb.vercel.app/user/verify_email/${token}" style="color: #6F42C1;">here</a>. Please note that the link will expire in the next hour.</p>
+      //       <p style="font-size: 16px; line-height: 1.6em;">To verify your email address and activate your account, please click <a href="https://proprepweb.vercel.app/user/verify_email_address/${token}" style="color: #6F42C1;">here</a>. Please note that the link will expire in the next hour.</p>
+      //       <a href="https://proprepweb.vercel.app/user/verify_email_address/${token}" style="display: inline-block; background-color: #6F42C1; color: #fff; text-decoration: none; padding: 10px 20px; border-radius: 5px; margin-top: 20px;">Click here to verify email</a>
       //       <p style="font-size: 16px; line-height: 1.6em;">If you have any questions or need assistance, feel free to contact our support team at <a href="mailto:support@proprep.com" style="color: #6F42C1;">support@proprep.com</a>.</p>
       //       <p style="font-size: 16px; line-height: 1.6em;">Best regards,<br/>The ProPrep Team</p>
-      //       <a href="#" style="display: inline-block; background-color: #6F42C1; color: #fff; text-decoration: none; padding: 10px 20px; border-radius: 5px; margin-top: 20px;">Click here to verify email</a>
-      //       </div>
+      //     </div>
       
       //   </div>
       
       // </body>
       // `
-      });
-      console.log('data \n',data);
-      console.log('error \n', error)
+      // //   html: `<body style="font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f7f7f7;">
 
-      if (error) {
-        console.log(error)
-        return;
-      }
+      // //   <div style="width: 600px; margin: auto; overflow: hidden; padding: 20px; background-color: #fff; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); margin-top: 50px;">
+      
+      // //     <h1 style="color: #6F42C1;">Welcome to ProPrep!</h1>
+      
+      // //     <p style="font-size: 16px; line-height: 1.6em; color: #666;">
+      // //       Dear ${rest.fullName},
+      // //     </p>
+      
+      // //     <p style="font-size: 16px; line-height: 1.6em; color: #666;">
+      // //       Thank you for creating an account on ProPrep – your ultimate destination for CBT quiz preparation. We are excited to have you on board!
+      // //     </p>
+      
+      // //     <p style="font-size: 16px; line-height: 1.6em; color: #666;">
+      // //       At ProPrep, we provide a comprehensive collection of CBT quiz questions tailored for 100 level exams. Our goal is to help you improve your performance by offering quizzes designed to enhance your understanding of key concepts.
+      // //     </p>
+      
+      // //     <p style="font-size: 16px; line-height: 1.6em; color: #666;">
+      // //       To get started and boost your preparation:
+      // //     </p>
+      
+      // //     <ul style="font-size: 16px; line-height: 1.6em; color: #666; padding-left: 20px;">
+      // //       <li>Explore our 100 level quiz questions to target specific topics.</li>
+      // //       <li>Take quizzes regularly to reinforce your knowledge.</li>
+      // //       <li>Track your performance and monitor your progress over time.</li>
+      // //     </ul>
+      
+      // //     <p style="font-size: 16px; line-height: 1.6em; color: #666;">
+      // //       We believe that effective preparation is the key to success, and our platform is designed to support your journey toward achieving your academic goals.
+      // //     </p>          
+      
+      // //     <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd; text-align: center; color: #666;">
+      // //       <p style="font-size: 16px; line-height: 1.6em;">To verify your email address and activate your account, please click <a href="https://proprepweb.vercel.app/user/verify_email/${token}" style="color: #6F42C1;">here</a>. Please note that the link will expire in the next hour.</p>
+      // //       <p style="font-size: 16px; line-height: 1.6em;">If you have any questions or need assistance, feel free to contact our support team at <a href="mailto:support@proprep.com" style="color: #6F42C1;">support@proprep.com</a>.</p>
+      // //       <p style="font-size: 16px; line-height: 1.6em;">Best regards,<br/>The ProPrep Team</p>
+      // //       <a href="#" style="display: inline-block; background-color: #6F42C1; color: #fff; text-decoration: none; padding: 10px 20px; border-radius: 5px; margin-top: 20px;">Click here to verify email</a>
+      // //       </div>
+      
+      // //   </div>
+      
+      // // </body>
+      // // `
+      // });
+      // console.log('data \n',data);
+      // console.log('error \n', error)
+
+      // if (error) {
+      //   console.log(error)
+      //   return;
+      // }
     })
     .catch((error) => {
       if (error.code = 11000) {
@@ -300,12 +363,21 @@ const sendVerificationEmail = (req, res) => {
       const tokenExpiration = '1h';
       const token = sign({email}, jwtSecret, {expiresIn: tokenExpiration});
       console.log('response');
-      const { data, error } = await resend.emails.send({
-        from: 'ProPrep <no-reply@cacagbalaiwosan.com.ng>',
-        to: [email],
-        subject: 'Welcome To ProPrep!',
-        // react: OTPEmail({ firstName: findMember.firstName, otp }),
-        html: `<body style="font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f7f7f7;">
+      const mailerSend = new MailerSend({
+        apiKey: process.env.MAILER_SEND_API_KEY,
+      });
+      
+      const sentFrom = new Sender("no-reply@trial-vywj2lpz0opg7oqz.mlsender.net", "ProPrep");
+      
+      const recipients = [
+        new Recipient(email, response.fullName)
+      ];
+
+      const emailParams = new EmailParams()
+        .setFrom(sentFrom)
+        .setTo(recipients)
+        .setSubject("This is a Subject")
+        .setHtml(`<body style="font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f7f7f7;">
 
         <div style="width: 600px; margin: auto; overflow: hidden; padding: 20px; background-color: #fff; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); margin-top: 50px;">
       
@@ -325,15 +397,44 @@ const sendVerificationEmail = (req, res) => {
       
         </div>
       
-      </body>`
-      });
-      console.log('data \n',data);
-      console.log('error \n', error)
+      </body>`)
+      
+      await mailerSend.email.send(emailParams);
 
-      if (error) {
-        console.log(error)
-        return;
-      }
+      // const { data, error } = await resend.emails.send({
+      //   from: 'ProPrep <no-reply@cacagbalaiwosan.com.ng>',
+      //   to: [email],
+      //   subject: 'Welcome To ProPrep!',
+      //   // react: OTPEmail({ firstName: findMember.firstName, otp }),
+      //   html: `<body style="font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f7f7f7;">
+
+      //   <div style="width: 600px; margin: auto; overflow: hidden; padding: 20px; background-color: #fff; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); margin-top: 50px;">
+      
+      //     <h1 style="color: #6F42C1;">Welcome to ProPrep!</h1>
+      
+      //     <p style="font-size: 16px; line-height: 1.6em; color: #666;">
+      //       Dear ${response.fullName},
+      //     </p>
+      
+      //     <p style="font-size: 16px; line-height: 1.6em; color: #666;">
+      //       To verify your email address and activate your account, please click the button below. Please note that the link will expire in the next hour.
+      //     </p>
+      
+      //     <div style="text-align: center; margin-top: 30px;">
+      //       <a href="https://proprepweb.vercel.app/user/verify_email_address/${token}" style="display: inline-block; background-color: #6F42C1; color: #fff; text-decoration: none; padding: 10px 20px; border-radius: 5px;">Verify Email</a>
+      //     </div>
+      
+      //   </div>
+      
+      // </body>`
+      // });
+      // console.log('data \n',data);
+      // console.log('error \n', error)
+
+      // if (error) {
+      //   console.log(error)
+      //   return;
+      // }
     })
     .catch((error) => {
       console.log(error);
