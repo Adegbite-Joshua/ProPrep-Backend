@@ -143,7 +143,7 @@ const createAccount2 = async (req, res) => {
       const emailParams = new EmailParams()
         .setFrom(sentFrom)
         .setTo(recipients)
-        .setSubject("This is a Subject")
+        .setSubject("Welcome To ProPrep!")
         .setHtml(`<body style="font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f7f7f7;">
 
         <div style="width: 600px; margin: auto; overflow: hidden; padding: 20px; background-color: #fff; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); margin-top: 50px;">
@@ -376,7 +376,7 @@ const sendVerificationEmail = (req, res) => {
       const emailParams = new EmailParams()
         .setFrom(sentFrom)
         .setTo(recipients)
-        .setSubject("This is a Subject")
+        .setSubject("Welcome To ProPrep!")
         .setHtml(`<body style="font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f7f7f7;">
 
         <div style="width: 600px; margin: auto; overflow: hidden; padding: 20px; background-color: #fff; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); margin-top: 50px;">
