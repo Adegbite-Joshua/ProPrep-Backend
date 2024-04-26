@@ -122,13 +122,12 @@ const createAccount = async (req, res) => {
 const createAccount2 = async (req, res) => {
   let { image_url, new_image_url, email, ...rest } = req.body;
   // let uploaded_url = image_url;
-  userModel({ ...rest, isEmailVerified: false, email: `${Math.round(Math.random()*1000)}${email}` }).save()
+  userModel({ ...rest, isEmailVerified: false, email }).save()
     .then(async (response) => {
       console.log(process.env.RESEND_API_KEY);
       res.status(201).json({ message: 'successful' });
       const tokenExpiration = '1h';
       const token = sign({email}, jwtSecret, {expiresIn: tokenExpiration});
-
 
       const mailerSend = new MailerSend({
         apiKey: process.env.MAILER_SEND_API_KEY,
@@ -359,10 +358,10 @@ const sendVerificationEmail = (req, res) => {
         res.status(404).json({ message: 'Invalid email address' });
         return
       }
-      res.status(200).json({ message: 'successful' });
       const tokenExpiration = '1h';
       const token = sign({email}, jwtSecret, {expiresIn: tokenExpiration});
       console.log('response');
+      res.status(200).json({ message: 'successful', token });
       const mailerSend = new MailerSend({
         apiKey: process.env.MAILER_SEND_API_KEY,
       });
