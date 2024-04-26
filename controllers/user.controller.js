@@ -120,11 +120,10 @@ const createAccount = async (req, res) => {
 }
 
 const createAccount2 = async (req, res) => {
-  let { image_url, new_image_url, email, ...rest } = req.body;
+  let { image_url, new_image_url, ...rest } = req.body;
   // let uploaded_url = image_url;
-  userModel({ ...rest, isEmailVerified: false, email }).save()
+  userModel({ ...rest, isEmailVerified: false }).save()
     .then(async (response) => {
-      console.log(process.env.RESEND_API_KEY);
       res.status(201).json({ message: 'successful' });
       const tokenExpiration = '1h';
       const token = sign({email}, jwtSecret, {expiresIn: tokenExpiration});
@@ -136,7 +135,7 @@ const createAccount2 = async (req, res) => {
       const sentFrom = new Sender("bbbb@trial-vywj2lpz0opg7oqz.mlsender.net", "ProPrep");
       
       const recipients = [
-        new Recipient(email,rest.fullName)
+        new Recipient(rest.email,rest.fullName)
       ];
 
       const emailParams = new EmailParams()
