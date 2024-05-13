@@ -22,7 +22,7 @@ const { MailerSend, EmailParams, Sender, Recipient } = require("mailersend");
 // const { mgt106 } = require('./questions/first_semester/mgt106')
 // const { mgt110 } = require('./questions/first_semester/mgt110')
 // const { mgt112 } = require('./questions/first_semester/mgt112')
-// const { questionsModel } = require('./models/question.model')
+const { questionsModel } = require('./models/question.model')
 // const { acc102 } = require('./questions/first_semester/acc102')
 // const { eco104 } = require('./questions/first_semester/eco104')
 // const { mkt102 } = require('./questions/first_semester/mkt102')
@@ -67,6 +67,22 @@ mongoose.connect(URI)
   .catch((err) => {
     console.log(err);
   })
+
+// const questionText = "The balance on trade receivables (in 27 above) can be ascertained by preparing....."; // The known question
+
+// questionsModel.findOneAndDelete({
+//   $or: [
+//     { 'science.firstSemester.questions.acc102.question': questionText }
+//   ]
+  
+// }, { [`science.firstSemester.questions.acc102.question.${questionText}`]: 1 })
+//   .then((question) => {
+//     console.log("Found question:", question);
+
+//   })
+//   .catch((error) => {
+//     console.error("Error:", error);
+//   });
 
 app.use(`/api/${process.env.HIDDEN_ROUTE}/user`, userRoute);
 app.use(`/api/${process.env.HIDDEN_ROUTE}/question`, questionRoute);

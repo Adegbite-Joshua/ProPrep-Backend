@@ -30,96 +30,8 @@ cloudinary.config({
   api_secret: process.env.CLOUDSECRET
 });
 
+
 const createAccount = async (req, res) => {
-  let { image_url, new_image_url, ...rest } = req.body;
-  // let uploaded_url = image_url;
-  userModel({ ...rest }).save()
-    .then(async (response) => {
-      res.status(201).json({ message: 'successful' });
-      // if (new_image_url) {
-      //     const uploadImage = await cloudinary.uploader.upload(req.body.image_url, {public_id: `proprep_${Math.round(Math.random()*10000)}${req.body.email}`});
-      //     uploaded_url = uploadImage.secure_url;
-      // }
-      // response = {...response, image_url: uploaded_url};
-      // userModel(response).save()
-      // attem({
-      //     _id: response._id,
-      //     questions: []
-      // }).save();
-      let transporter = nodemailer.createTransport({
-        service: 'gmail',
-        auth: {
-          user: process.env.USER_EMAIL,
-          pass: process.env.USER_PASSWORD
-        },
-        tls: {
-          rejectUnauthorized: false,
-        },
-
-      })
-      let mailOptions = {
-        from: process.env.USER_EMAIL,
-        to: [req.body.email],
-        subject: 'Welcome To ProPrep!',
-        html: `<body style="font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f7f7f7;">
-
-            <div style="width: 600px; margin: auto; overflow: hidden; padding: 20px; background-color: #fff; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); margin-top: 50px;">
-          
-              <h1 style="color: #6F42C1;">Welcome to ProPrep!</h1>
-          
-              <p style="font-size: 16px; line-height: 1.6em; color: #666;">
-                Dear ${rest.fullName},
-              </p>
-          
-              <p style="font-size: 16px; line-height: 1.6em; color: #666;">
-                Thank you for creating an account on ProPrep – your ultimate destination for CBT quiz preparation. We are excited to have you on board!
-              </p>
-          
-              <p style="font-size: 16px; line-height: 1.6em; color: #666;">
-                At ProPrep, we provide a comprehensive collection of CBT quiz questions tailored for 100 level exams. Our goal is to help you improve your performance by offering quizzes designed to enhance your understanding of key concepts.
-              </p>
-          
-              <p style="font-size: 16px; line-height: 1.6em; color: #666;">
-                To get started and boost your preparation:
-              </p>
-          
-              <ul style="font-size: 16px; line-height: 1.6em; color: #666; padding-left: 20px;">
-                <li>Explore our 100 level quiz questions to target specific topics.</li>
-                <li>Take quizzes regularly to reinforce your knowledge.</li>
-                <li>Track your performance and monitor your progress over time.</li>
-              </ul>
-          
-              <p style="font-size: 16px; line-height: 1.6em; color: #666;">
-                We believe that effective preparation is the key to success, and our platform is designed to support your journey toward achieving your academic goals.
-              </p>          
-              <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd; text-align: center; color: #666;">
-                <p style="font-size: 16px; line-height: 1.6em;">If you have any questions or need assistance, feel free to contact our support team at <a href="mailto:support@proprep.com" style="color: #6F42C1;">support@proprep.com</a>.</p>
-                <p style="font-size: 16px; line-height: 1.6em;">Best regards,<br/>The ProPrep Team</p>
-              </div>
-          
-            </div>
-          
-          </body>`
-      }
-      transporter.sendMail(mailOptions)
-        .then((response) => {
-          console.log(response)
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    })
-    .catch((error) => {
-      if (error.code = 11000) {
-        res.status(409).json({ message: 'Email exists' })
-      } else {
-        res.status(500).json({ message: 'Server Error' })
-      }
-    })
-
-}
-
-const createAccount2 = async (req, res) => {
   let { image_url, new_image_url, ...rest } = req.body;
   // let uploaded_url = image_url;
   userModel({ ...rest, isEmailVerified: false }).save()
@@ -299,30 +211,8 @@ const createAccount2 = async (req, res) => {
 
 }
 
-const signIn = (req, res) => {
-  let { password, email } = req.body;
-  console.log(req.headers);
-  userModel.findOne({ email })
-    .then((response) => {
-      if (response) {
-        response.validatePassword(password, (error, same) => {
-          if (same) {
-            // let token = jwt.sign({password, email}, process.env.JWTSECRET);
-            res.status(200).json({ message: 'successful', details: response });
-          } else {
-            res.status(400).json('incorrect password');
-          }
-        })
-      } else {
-        res.status(404).json('wrong email');
-      }
-    })
-    .catch((error) => {
-      console.log(error);
-    })
-}
 
-const signIn2 = (req, res) => {
+const signIn = (req, res) => {
   let { password, email } = req.body;
   userModel.findOne({ email })
     .then((response) => {
@@ -655,4 +545,4 @@ const getLandingNews = (req, res) => {
 
 };
 
-module.exports = { createAccount, createAccount2, signIn, signIn2, sendVerificationEmail, verifyEmailAddress, fetchCourseAttemptedQuestions, addAttemptedQuestion, getLandingNews, updateUserDetails, sendNewPasswordEmail, changePassword };
+module.exports = { createAccount, signIn, sendVerificationEmail, verifyEmailAddress, fetchCourseAttemptedQuestions, addAttemptedQuestion, getLandingNews, updateUserDetails, sendNewPasswordEmail, changePassword };
